@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="itemApp">
+<head>
+<title>Item Collection App</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="app.js">var app = angular.module('itemApp', []);
+app.controller('ItemController', function($scope) {
+$scope.items = [];
+$scope.addItem = function() { 
+if ($scope.newItem) {
+$scope.items.push($scope.newItem);
+$scope.newItem = ''; 
+}
+};
+$scope.removeItem = function(index) {
+$scope.items.splice(index, 1);
+};
+});
+</script>
+<style>
+input[type="text"] {
+width: 200px; 
+margin-bottom: 10px;
+}
+ul {
+list-style: none; 
+padding: 0;
+} 
+li {
+margin-bottom: 5px;
+}
+</style>
+</head>
+<body ng-controller="ItemController">
+<h2>Item Collection App</h2>
+<input type="text" placeholder="Enter item" ng-model="newItem">
+<button ng-click="addItem()">Add Item</button>
+<p>Total Items: {{ items.length }}</p>
+<ul>
+<li ng-repeat="item in items">
+{{ item }}
+<button ng-click="removeItem($index)">Remove</button>
+</li>
+</ul>
+</body>
+</html>
+
+
+app.js
+var app = angular.module('itemApp', []);
+app.controller('ItemController', function($scope) {
+    $scope.items = [];
+    $scope.addItem = function() {
+        if ($scope.newItem) {
+            $scope.items.push($scope.newItem);
+            $scope.newItem = ''; // Clear input field after adding item
+        }
+    };
+    $scope.removeItem = function(index) {
+        $scope.items.splice(index, 1);
+    };
+});
