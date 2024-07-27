@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="todoApp">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        .completed {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div ng-controller="TodoController as todoCtrl">
+        <h2>To-Do List</h2>
+        <form ng-submit="todoCtrl.addTask()">
+            <input type="text" ng-model="todoCtrl.newTask" placeholder="Add new task" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <ul>
+            <li ng-repeat="task in todoCtrl.tasks track by $index">
+                <input type="checkbox" ng-model="task.completed" ng-click="todoCtrl.toggleCompleted(task)">
+                <span ng-class="{ 'completed': task.completed }">{{ task.name }}</span>
+                <button ng-click="todoCtrl.editTask($index)">Edit</button>
+                <button ng-click="todoCtrl.deleteTask($index)">Delete</button>
+            </li>
+        </ul>
+        <div ng-show="todoCtrl.editing">
+            <input type="text" ng-model="todoCtrl.updatedTask" ng-blur="todoCtrl.updateTask()">
+            <button ng-click="todoCtrl.cancelEdit()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        angular.module('todoApp', [])
+            .controller('TodoController', function () {
+                var vm = this;
+                vm.tasks = [
+                    { name: 'Learn AngularJS', completed: false },
+                    { name: 'Build a to-do app', completed: true }
+                ];
+                vm.newTask = '';
+                vm.updatedTask = '';
+                vm.editing = false;
+                vm.editIndex = null;
+
+                vm.addTask = function () {
+                    if (vm.newTask.trim() !== '') {
+                        vm.tasks.push({ name: vm.newTask, completed: false });
+                        vm.newTask = '';
+                    }
+                };
+
+                vm.toggleCompleted = function (task) {
+                    task.completed = !task.completed;
+                };
+
+                vm.editTask = function (index) {
+                    vm.editing = true;
+                    vm.editIndex = index;
+                    vm.updatedTask = vm.tasks[index].name;
+                };
+
+                vm.updateTask = function () {
+                    if (vm.updatedTask.trim() !== '') {
+                        vm.tasks[vm.editIndex].name = vm.updatedTask;
+                        vm.cancelEdit();
+                    }
+                };
+
+                vm.cancelEdit = function () {
+                    vm.editing = false;
+                    vm.editIndex = null;
+                    vm.updatedTask = '';
+                };
+
+                vm.deleteTask = function (index) {
+                    vm.tasks.splice(index, 1);
+                };
+            });
+    </script>
+</body>
+</html>
