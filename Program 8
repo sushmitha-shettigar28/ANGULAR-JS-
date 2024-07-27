@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="userApp">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div ng-controller="UserController as userCtrl">
+        <h2>User Management</h2>
+        <form ng-submit="userCtrl.addUser()">
+            <input type="text" ng-model="userCtrl.newUser.name" placeholder="Enter name" required>
+            <input type="email" ng-model="userCtrl.newUser.email" placeholder="Enter email" required>
+            <button type="submit">Add User</button>
+        </form>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            <tr ng-repeat="user in userCtrl.users">
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <button ng-click="userCtrl.editUser(user)">Edit</button>
+                    <button ng-click="userCtrl.deleteUser(user)">Delete</button>
+                </td>
+            </tr>
+        </table>
+        <div ng-show="userCtrl.editing">
+            <h3>Edit User</h3>
+            <form ng-submit="userCtrl.updateUser()">
+                <input type="text" ng-model="userCtrl.updatedUser.name" required>
+                <input type="email" ng-model="userCtrl.updatedUser.email" required>
+                <button type="submit">Update</button>
+                <button type="button" ng-click="userCtrl.cancelEdit()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        angular.module('userApp', [])
+            .controller('UserController', function () {
+                var vm = this;
+                vm.users = [
+                    { name: 'John Doe', email: 'john@example.com' },
+                    { name: 'Jane Doe', email: 'jane@example.com' }
+                ];
+                vm.newUser = { name: '', email: '' };
+                vm.updatedUser = { name: '', email: '' };
+                vm.editing = false;
+                vm.editIndex = null;
+
+                vm.addUser = function () {
+                    if (vm.newUser.name.trim() !== '' && vm.newUser.email.trim() !== '') {
+                        vm.users.push({ name: vm.newUser.name, email: vm.newUser.email });
+                        vm.newUser.name = '';
+                        vm.newUser.email = '';
+                    }
+                };
+
+                vm.editUser = function (user) {
+                    vm.editing = true;
+                    vm.editIndex = vm.users.indexOf(user);
+                    vm.updatedUser.name = user.name;
+                    vm.updatedUser.email = user.email;
+                };
+
+                vm.updateUser = function () {
+                    if (vm.updatedUser.name.trim() !== '' && vm.updatedUser.email.trim() !== '') {
+                        vm.users[vm.editIndex].name = vm.updatedUser.name;
+                        vm.users[vm.editIndex].email = vm.updatedUser.email;
+                        vm.cancelEdit();
+                    }
+                };
+
+                vm.cancelEdit = function () {
+                    vm.editing = false;
+                    vm.editIndex = null;
+                    vm.updatedUser.name = '';
+                    vm.updatedUser.email = '';
+                };
+
+                vm.deleteUser = function (user) {
+                    var index = vm.users.indexOf(user);
+                    if (index !== -1) {
+                        vm.users.splice(index, 1);
+                    }
+                };
+            });
+    </script>
+</body>
+</html>
+
