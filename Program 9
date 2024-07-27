@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html ng-app="employeeApp">
+<head>
+    <title>Employee Directory</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body>
+    <div ng-controller="EmployeeController as empCtrl">
+        <h1>Employee Directory</h1>
+        
+        <input type="text" ng-model="searchName" placeholder="Search by name">
+        <input type="text" ng-model="searchSalary" placeholder="Search by salary">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in empCtrl.employees | filter: { name: searchName, salary: searchSalary }">
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.salary }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        angular.module('employeeApp', [])
+            .controller('EmployeeController', function() {
+                this.employees = [
+                    { name: 'John Doe', salary: 50000 },
+                    { name: 'Jane Smith', salary: 60000 },
+                    { name: 'Mark Johnson', salary: 55000 },
+                    { name: 'Emily Davis', salary: 62000 },
+                    { name: 'Michael Wilson', salary: 58000 },
+                    { name: 'Sarah Brown', salary: 53000 },
+                    { name: 'Chris Lee', salary: 56000 },
+                    { name: 'Amanda Taylor', salary: 59000 },
+                    { name: 'James Anderson', salary: 61000 },
+                    { name: 'Lauren Martinez', salary: 54000 }
+                ];
+            });
+    </script>
+</body>
+</html>
